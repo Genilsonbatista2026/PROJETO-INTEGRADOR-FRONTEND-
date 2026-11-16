@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Espaço Bella Nails | Estúdio de Nail Design</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navbar com Flexbox, position: sticky, dropdown e botão hambúrguer (Aula 08) -->
+  <header id="cabecalho-principal" class="navbar">
+    <div class="logo-area">
+      <!-- SVG Inline acessível: permanece nítido ao redimensionar a janela pois é vetorial (Aula 05) -->
+      <svg width="36" height="36" viewBox="0 0 64 64" role="img" aria-labelledby="titulo-logo">
+        <title id="titulo-logo">Logotipo Espaço Bella Nails</title>
+        <circle cx="32" cy="32" r="30" fill="#f8bbd0" />
+        <path d="M24 44 C24 24, 40 24, 40 44 Z" fill="#ad1457" />
+        <circle cx="32" cy="22" r="4" fill="#ffffff" />
+      </svg>
+      <h1>Espaço Bella Nails</h1>
+    </div>
+
+    <button class="btn-hamburguer" aria-label="Abrir menu de navegação" aria-expanded="false">
+      &#9776;
+    </button>
+
+    <nav aria-label="Menu Principal">
+      <ul class="menu-lista">
+        <li><a href="#sobre" class="ativo">Início</a></li>
+        <li class="item-dropdown">
+          <a href="#servicos">Serviços &#9662;</a>
+          <ul class="submenu">
+            <li><a href="#servicos">Alongamento em Gel</a></li>
+            <li><a href="#servicos">Blindagem e Esmaltação</a></li>
+            <li><a href="#servicos">Spa dos Pés</a></li>
+            <li><a href="#servicos">Banho de Gel</a></li>
+            <li><a href="#servicos">Manutenção em Gel</a></li>
+            <li><a href="#servicos">Alongamento de Tips</a></li>
+            <li><a href="#servicos">Manicure e Pedicure</a></li>
+            <li><a href="#servicos">Combo Banho de Gel + Pedicure</a></li>
+            <li><a href="#servicos">Combo Alongamento de Tips + Pedicure</a></li>
+          </ul>
+        </li>
+        <li><a href="#galeria">Galeria</a></li>
+        <li><a href="#agenda">Horários</a></li>
+        <li><a href="#agendar">Agendar</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Seção 1: Apresentação e Lista de Serviços (Aulas 02, 03 e 07) -->
+    <section id="sobre" class="secao">
+      <h2>Bem-vinda ao Espaço Bella Nails</h2>
+      <p>Realçamos a beleza e a saúde das suas unhas com técnicas modernas, biossegurança rigorosa e atendimento personalizado.</p>
+
+      <div class="grade-servicos" id="servicos">
+        <article class="card">
+          <h3>Gel</h3>
+          <p>Resistência e naturalidade com acabamento impecável.</p>
+          <ul>
+            <li>Esmaltação em gel</li>
+            <li>Manutenção do gel</li>
+            <li>Banho de gel</li>
+            <li>Alongamento em gel</li>
+            <li>Alongamento de tips</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Manicure e Pedicure</h3>
+          <p>Serviço de cuidados com as unhas e cutículas.</p>
+          <ul>
+            <li>Limpeza e corte das unhas</li>
+            <li>Tratamento das cutículas</li>
+            <li>Spa dos pés e mãos</li>
+            <li>Massagem relaxante nos pés</li>
+            <li>Esfoliação com sais minerais</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Combos</h3>
+          <p>Ofertas especiais que combinam serviços para um tratamento completo.</p>
+          <ul>
+            <li>Esmaltação + Pedicure</li>
+            <li>Alongamento de Tips + Pedicure</li>
+            <li>Banho de Gel + Pedicure</li>
+            <li>Manicure + Pedicure</li>
+            <li>Manutenção em Gel + Pedicure</li>
+          </ul>
+        </article>
+      </div>
+
+      <p>
+        Confira as normas de biossegurança na 
+        <a href="https://www.gov.br" target="_blank" rel="noopener noreferrer">página oficial da ANVISA</a>.
+      </p>
+
+      <!-- Imagem com caminho relativo, nome minúsculo e alt descritivo (Aula 02) -->
+      <figure class="banner-estudio">
+        <img src="assets/images/image10.jpeg" alt="Bancada iluminada do Espaço Bella Nails com esmaltes em gel organizados e poltrona rosa">
+        <figcaption>Nosso ambiente preparado para o seu momento de autocuidado.</figcaption>
+      </figure>
+    </section>
+
+    <!-- Seção 2: Tabela de Agendamento (Aulas 02 e 06) -->
+<section id="agenda" class="secao">
+  <h2>Tabela de Agendamento Semanal</h2>
+  <p>Consulte os horários disponíveis e valores base antes de preencher sua solicitação.</p>
+
+  <table class="tabela-agenda">
+    <thead>
+      <tr>
+        <th>Dia da Semana</th>
+        <th>Horário</th>
+        <th>Serviço</th>
+        <th>Profissional</th>
+        <th>Valor</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Terça-feira</td>
+        <td>09:00</td>
+        <td>Alongamento na Tip</td>
+        <td>Bella</td>
+        <td>R$ 140,00</td>
+        <td>Disponível</td>
+      </tr>
+      <tr>
+        <td>Quarta-feira</td>
+        <td>14:00</td>
+        <td>Esmaltação em Gel</td>
+        <td>Camila</td>
+        <td>R$ 70,00</td>
+        <td>Disponível</td>
+      </tr>
+      <tr>
+        <td>Sexta-feira</td>
+        <td>10:30</td>
+        <td>Manutenção em Gel</td>
+        <td>Bella</td>
+        <td>R$ 110,00</td>
+        <td>Última Vaga</td>
+      </tr>
+      <tr>
+        <td>Sábado</td>
+        <td>15:00</td>
+        <td>Combo Mão + Spa dos Pés</td>
+        <td>Camila</td>
+        <td>R$ 140,00</td>
+        <td>Disponível</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+    
+    <section id="galeria" class="secao">
+      <h2>Galeria de Inspirações</h2>
+      <p>Confira alguns dos trabalhos realizados no Espaço Bella Nails.</p>
+
+      <div class="galeria-grid">
+        <figure class="foto-item">
+          <img src="assets/images/image2.jpeg" alt="manicure tradicional">
+          <figcaption>Manicure Tradicional</figcaption>
+        </figure>
+
+        <figure class="foto-item">
+          <img src="assets/images/image3.jpeg" alt="banho em gel">
+          <figcaption>Banho em Gel</figcaption>
+        </figure>
+
+        <figure class="foto-item">
+          <img src="assets/images/image4.jpeg" alt="esmaltação em gel">
+          <figcaption>Esmaltação em Gel</figcaption>
+        </figure>
+
+        <figure class="foto-item">
+          <img src="assets/images/image5.jpeg" alt="unha em gel">
+          <figcaption>Unha em Gel</figcaption>
+        </figure>
+
+        <figure class="foto-item">
+          <img src="assets/images/image20.jpeg" alt="spa dos pés">
+          <figcaption>Spa dos Pés</figcaption>
+        </figure>
+
+        <figure class="foto-item">
+          <img src="assets/images/image21.jpeg" alt="pedicure">
+          <figcaption>Pedicure</figcaption>
+        </figure>
+      </div>
+    </section>
+    
+
+    <!-- Seção 3: Mídia e Gráfico Canvas -->
+    <section id="midia-dados" class="secao">
+
+    <!-- Seção 3: Mídia e Gráfico Canvas (Aulas 04 e 05) -->
+    <section id="midia-dados" class="secao">
+      <h2>Tour pelo Estúdio e Indicadores</h2>
+
+      <!-- Vídeo com fallback de formatos e preload="metadata" (Aula 04) -->
+      <!-- Justificativa preload: Usamos preload="metadata" para carregar apenas a duração e dimensões do vídeo sem consumir banda excessiva do usuário antes do clique. -->
+      <video controls width="100%" poster="assets/images/image10.jpeg" preload="metadata">
+        <source src="assets/images/videowebm.webm" type="video/webm">
+        <source src="assets/images/videomp4.mp4" type="video/mp4">
+    
+      </video>
+
+      <!-- Gráfico Canvas 2D com fallback textual real (Aula 05) -->
+      <div class="canvas-container">
+        <h3>Progresso da Meta Mensal de Atendimentos</h3>
+        <canvas id="grafico-atendimentos" width="400" height="120">
+          Gráfico de barras mostrando que o Espaço Bella Nails atingiu 85% da meta de 200 atendimentos mensais.
+        </canvas>
+      </div>
+    </section>
+
+    <!-- Seção 4: Formulário de Agendamento Semântico e Acessível (Aula 03) -->
+    <section id="agendar" class="secao">
+      <h2>Solicitar Agendamento</h2>
+      <form action="#" method="post" class="formulario-agendamento">
+        <fieldset>
+          <legend>Dados da Cliente e Escolha do Horário</legend>
+
+          <div class="campo">
+            <label for="nome-cliente">Nome Completo:</label>
+            <input type="text" id="nome-cliente" name="nome" required minlength="3" placeholder="Ex: Genilson Batista">
+          </div>
+
+          <div class="campo">
+            <label for="telefone-cliente">WhatsApp (com DDD):</label>
+            <input type="tel" id="telefone-cliente" name="telefone" required pattern="[0-9]{10,11}" placeholder="Ex: 83999998888">
+          </div>
+
+          <div class="campo">
+            <label for="email-cliente">E-mail para confirmação:</label>
+            <input type="email" id="email-cliente" name="email" required placeholder="genilson@email.com">
+          </div>
+
+          <div class="campo">
+            <label for="data-agendamento">Data Desejada:</label>
+            <input type="date" id="data-agendamento" name="data" required min="2026-11-14">
+          </div>
+
+        <div class="campo">
+        <label for="hora-agendamento">Horário Desejado:</label>
+         <input type="time" id="hora-agendamento" name="hora" required min="09:00" max="18:00">
+        </div>
+
+
+          <div class="campo">
+            <label for="servico-escolhido">Serviço:</label>
+            <select id="servico-escolhido" name="servico" required>
+              <option value="">Selecione uma opção</option>
+              <option value="alongamento-gel">Alongamento em Gel</option>
+              <option value="blindagem-esmaltacao">Blindagem e Esmaltação</option>
+              <option value="spa-pes">Spa dos Pés</option>
+              <option value="banho-gel">Banho de Gel</option>
+              <option value="manutencao-gel">Manutenção em Gel</option>
+              <option value="alongamento-tips">Alongamento de Tips</option>
+              <option value="manicure-pedicure">Combo Manicure e Pedicure</option>
+              <option value="combo-banho-pedicure">Combo Banho de Gel + Pedicure</option>
+              <option value="combo-tips-pedicure">Combo Alongamento de Tips + Pedicure</option>
+            </select>
+          </div>
+
+          <button type="submit" class="botao">Confirmar Pré-Agendamento</button>
+        </fieldset>
+      </form>
+    </section>
+
+    <!-- Seção 5: Área dinâmica manipulada pelo DOM na Aula 11 -->
+    <section id="resultado" class="secao">
+      <h2>Resumo dos Serviços Analisados (JS + DOM)</h2>
+    </section>
+  </main>
+
+        <!-- Seção de Contato -->
+    <section id="contato" class="secao">
+      <h2>Entre em Contato</h2>
+      <p>Fale diretamente conosco para tirar dúvidas ou acompanhar nossas novidades.</p>
+
+      <div class="grade-contato">
+        <div class="card">
+          <h3>WhatsApp</h3>
+          <p>(83) 98834-5583</p>
+          <a href="https://wa.me" target="_blank" rel="noopener noreferrer" class="botao-link">
+            Chamar no WhatsApp
+          </a>
+        </div>
+
+        <div class="card">
+          <h3>Instagram</h3>
+          <p>@andrezamarianonails</p>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="botao-link">
+            Seguir no Instagram
+          </a>
+        </div>
+
+        <div class="card">
+          <h3>Endereço e Horário</h3>
+          <p>Bancários Sergio Guerra, 150 - Bancários, João Pessoa - PB</p>
+          <p>Terça a Sábado: 09h às 18h</p>
+        </div>
+    </div>
+
+      <!-- Mapa Interativo do Estúdio -->
+      <div class="mapa-container">
+        <h3>Como Chegar</h3>
+        <iframe 
+  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3958.788670553226!2d-34.840837699999994!3d-7.1504170999999985!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x7acc340558f009f%3A0x47ef6c61febbb31e!2sMickaelly%20Cartaxo%20-%20Studio%20de%20Beleza!5e0!3m2!1spt-BR!2sbr!4v1794785575997!5m2!1spt-BR!2sbr" 
+  width="100%" 
+  height="300" 
+  allowfullscreen="" 
+  loading="lazy" 
+  referrerpolicy="strict-origin-when-cross-origin"
+  title="Mapa de localização do Espaço Bella Nails">
+</iframe>
+
+      </div>
+    </section>
+
+
+      </div>
+    </section>
+  </main>
+
+
+  <footer>
+    <p>&copy; 2026 Espaço Bella Nails - Todos os direitos reservados.</p>
+  </footer>
+
+  <!--(Aulas 09 e 11) -->
+  <script src="js/logica.js" defer></script>
+  <script src="js/script.js" defer></script>
+</body>
+</html>

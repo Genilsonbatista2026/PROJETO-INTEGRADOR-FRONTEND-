@@ -1,0 +1,304 @@
+:root {
+  --cor-primaria: #ad1457;
+  --cor-secundaria: #f8bbd0;
+  --cor-fundo: #fff9fb;
+  --cor-texto: #333333;
+  --cor-branco: #ffffff;
+  --espacamento-padrao: 1.5rem;
+  --raio-borda: 0.5rem;
+}
+
+/* Justificativa rem: O uso de rem respeita as preferências de tamanho de fonte do navegador do usuário, garantindo acessibilidade. */
+body {
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--cor-texto);
+
+  background-image: 
+    linear-gradient(rgba(255, 249, 251, 0.88), rgba(255, 249, 251, 0.88)),
+    url("../assets/images/image10.jpeg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+
+}
+
+/* Navbar com Flexbox e position: sticky (Aula 08) */
+#cabecalho-principal {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--cor-branco);
+  border-bottom: 2px solid var(--cor-secundaria);
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo-area h1 {
+  font-size: 1.5rem;
+  color: var(--cor-primaria);
+}
+
+/* Combinador filho direto (>) escolhido para estilizar apenas os itens principais da navbar sem afetar o submenu (Aula 06) */
+.menu-lista {
+  display: flex;
+  list-style: none;
+  gap: 1.5rem;
+}
+
+.menu-lista > li {
+  position: relative;
+}
+
+/* 4 estados de link na ordem LoVe/HAte (Aula 06) */
+a:link { color: var(--cor-primaria); text-decoration: none; font-weight: bold; }
+a:visited { color: #880e4f; }
+a:hover, a:focus-visible { color: #d81b60; text-decoration: underline; }
+a:active { color: #4a0025; }
+
+.ativo {
+  border-bottom: 2px solid var(--cor-primaria);
+  padding-bottom: 0.2rem;
+}
+
+/* Dropdown funcional via :hover sem buracos (Aula 08) */
+.submenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  list-style: none;
+  background-color: var(--cor-branco);
+  border: 1px solid var(--cor-secundaria);
+  border-radius: var(--raio-borda);
+  min-width: 200px;
+  padding: 0.5rem 0;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.submenu li a {
+  display: block;
+  padding: 0.5rem 1rem;
+}
+
+.item-dropdown:hover .submenu {
+  display: block;
+}
+
+.btn-hamburguer {
+  display: none;
+  background: none;
+  border: 1px solid var(--cor-primaria);
+  font-size: 1.5rem;
+  color: var(--cor-primaria);
+  cursor: pointer;
+}
+
+.secao {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: var(--espacamento-padrao);
+}
+
+.secao h2 {
+  font-size: 1.75rem;
+  color: var(--cor-primaria);
+  margin-bottom: 1rem;
+}
+
+/* Seção de grade responsiva com CSS Grid sem media query (Aula 07) */
+.grade-servicos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+/* Box model explícito no componente .card (Aula 06) */
+.card {
+  background-color: var(--cor-branco);
+  padding: 1.5rem;
+  border: 1px solid var(--cor-secundaria);
+  border-radius: var(--raio-borda);
+  margin-bottom: 0.5rem;
+  transition: transform 0.2s ease;
+}
+
+/* Uso de transform em vez de width/height para evitar reflow de layout (Aula 07) */
+.card:hover {
+  transform: translateY(-4px);
+}
+
+/* Pseudo-classe estrutural destacando o primeiro card (Aula 07) */
+.grade-servicos .card:first-child {
+  border-top: 5px solid var(--cor-primaria);
+}
+
+.card ul {
+  margin-top: 0.75rem;
+  padding-left: 1.25rem;
+  list-style-type: circle;
+}
+
+/* Estilização da Tabela de Agendamento (Aula 06) */
+.tabela-agenda {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background-color: var(--cor-branco);
+}
+
+.tabela-agenda th, .tabela-agenda td {
+  border: 1px solid var(--cor-secundaria);
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.tabela-agenda th {
+  background-color: var(--cor-primaria);
+  color: var(--cor-branco);
+}
+
+.tabela-agenda tbody tr:nth-child(even) {
+  background-color: #fce4ec;
+}
+
+/* Formulário e Botão */
+.formulario-agendamento fieldset {
+  border: 1px solid var(--cor-secundaria);
+  border-radius: var(--raio-borda);
+  padding: 1.5rem;
+  background-color: var(--cor-branco);
+}
+
+.campo {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.campo input, .campo select {
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 0.3rem;
+  font-size: 1rem;
+}
+
+.botao {
+  background-color: var(--cor-primaria);
+  color: var(--cor-branco);
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--raio-borda);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* Classes de faixa para o DOM (Aula 11) */
+.item-resultado {
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.3rem;
+  border-left: 5px solid;
+}
+.faixa-rapida { background-color: #e8f5e9; border-color: #2e7d32; }
+.faixa-media { background-color: #fff3e0; border-color: #ef6c00; }
+.faixa-longa { background-color: #fce4ec; border-color: #ad1457; }
+
+footer {
+  text-align: center;
+  padding: 1.5rem;
+  background-color: var(--cor-secundaria);
+  margin-top: 3rem;
+}
+footer {
+  text-align: center;
+  padding: 1.5rem;
+  background-color: var(--cor-secundaria);
+  margin-top: 3rem;
+}
+
+
+.galeria-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.foto-item {
+  background-color: var(--cor-branco);
+  border: 1px solid var(--cor-secundaria);
+  border-radius: var(--raio-borda);
+  overflow: hidden;
+  text-align: center;
+  transition: transform 0.25s ease;
+}
+
+.foto-item:hover {
+  transform: scale(1.03);
+}
+
+.foto-item img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+}
+
+.foto-item figcaption {
+  padding: 0.75rem;
+  font-weight: bold;
+  color: var(--cor-primaria);
+  font-size: 0.95rem;
+}
+/* Seção de Contato */
+.grade-contato {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.botao-link {
+  display: inline-block;
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--cor-primaria);
+  color: var(--cor-branco) !important;
+  border-radius: var(--raio-borda);
+  text-decoration: none;
+}
+
+.botao-link:hover {
+  background-color: #880e4f;
+  text-decoration: none;
+}
+/* Estilização do Mapa Interativo */
+.mapa-container {
+  margin-top: 2rem;
+  background-color: var(--cor-branco);
+  padding: 1.25rem;
+  border: 1px solid var(--cor-secundaria);
+  border-radius: var(--raio-borda);
+}
+
+.mapa-container h3 {
+  color: var(--cor-primaria);
+  margin-bottom: 0.75rem;
+}
+
+.mapa-container iframe {
+  border-radius: var(--raio-borda);
+  display: block;
+}
