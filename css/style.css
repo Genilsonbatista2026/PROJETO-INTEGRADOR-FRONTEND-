@@ -302,3 +302,87 @@ footer {
   border-radius: var(--raio-borda);
   display: block;
 }
+/* Controles, Filtros e Botões da Tabela */
+.controles-tabela {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.filtros-tabela,
+.botoes-tabela {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filtros-tabela select,
+.btn-acao {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #d4a5b2;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btn-acao {
+  background-color: #9e3b5a;
+  color: #ffffff;
+  border: none;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.btn-acao:hover {
+  opacity: 0.9;
+}
+
+/* Responsividade e Hover da Tabela */
+.tabela-container {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 10px;
+}
+
+.tabela-agenda tbody tr:hover {
+  background-color: #fdf2f5;
+}
+
+/* Badges de Status */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.badge.disponivel {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.badge.ultima-vaga {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.badge.lotado {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.btn-excluir {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.btn-excluir:hover {
+  transform: scale(1.2);
+}

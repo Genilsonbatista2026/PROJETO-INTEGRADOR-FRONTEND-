@@ -22,6 +22,49 @@ const agendamentosSemana = [
   { cliente: "Eduarda Alves", valor: 65, dia: "quinta" }
 ];
 
+let comandoUsuario = "";
+while (comandoUsuario !== "sair") {
+  const acao= prompt("Digite 'total' para ver o total de horários cadastrados ou 'sair' para encerrar:");
+
+  if (acao === null) {
+    comandoUsuario = "sair";
+  } else{ 
+    comandoUsuario = acao.trim().toLowerCase();
+
+
+    if (comandoUsuario === "novo") {
+  const novocliente = prompt('Digite o nome do novo cliente:');
+  const novovalor = prompt('Digite o valor do serviço para o novo cliente:');
+  const novodia = prompt('Digite o dia da semana para o novo agendamento (ex: terca, quarta, quinta, sexta, sabado):');
+  const novohorario = prompt('Digite o horário do agendamento (ex: 14:00):');
+
+
+  if (novocliente && !isNaN(novovalor) && novodia && novohorario) {
+    agendamentosSemana.push({
+       cliente: novocliente,
+        valor: Number(novovalor),
+         dia: novodia
+         .trim()
+         .toLowerCase()
+         .replace("-feira","")
+         .replace("feira","")
+         .normalize("NFD")
+         .replace(/[\u0300-\u036f]/g, "")
+        .trim(),
+         horario: novohorario
+         });
+
+    console.log(`agendamento de ${novocliente} adicionado!`);
+  } else {
+    alert("Dados inválidos. Agendamento cancelado.");
+  }
+    }else if (comandoUsuario === "total") {
+      console.log(`Total de horários cadastrados na semana: ${agendamentosSemana.length}`);
+    }    
+  }
+}
+
+
 const entradaMinimo = prompt("Espaço Bella Nails - Digite um valor mínimo de serviço para filtrar (ex: 100):");
 const valorMinimo = Number(entradaMinimo);
 
@@ -67,27 +110,39 @@ if (entradaMinimo === null || entradaMinimo.trim() === "" || Number.isNaN(valorM
       Cliente: agendamento.cliente,
       Valor: `R$ ${agendamento.valor}`,
       Faixa: faixaPreco,
+      Dia: agendamento.dia,
+      Horario: agendamento.horario || "Horário não informado",
       HorarioFuncionamento: turnoAtendimento
     });
   }
 
   console.log(`Faturamento previsto: R$ ${faturamentoTotal.toFixed(2)} | Agendamentos >= R$ ${valorMinimo}: ${qtdAcimaMinimo}`);
   console.table(relatorioConsole);
-}
+  const elementofaturamento = document.getElementById("resumo-faturamento");
+ const containerAgendamentos = document.getElementById("lista-agendamentos");
 
-let comandoUsuario = "";
-while (comandoUsuario !== "sair") {
-  const resposta = prompt('Digite "total" para ver a quantidade de horários ou "sair" para encerrar:');
-  if (resposta === null) {
-    comandoUsuario = "sair";
-  } else {
-    comandoUsuario = resposta.trim().toLowerCase();
-    if (comandoUsuario === "total") {
-      console.log(`Total de horários cadastrados na semana: ${agendamentosSemana.length}`);
+ if (elementofaturamento) {
+    elementofaturamento.textContent = `Faturamento previsto: R$ ${faturamentoTotal.toFixed(2)} | total de horários:  ${agendamentosSemana.length}`;
+ }
+ if (containerAgendamentos) {
+    containerAgendamentos.innerHTML = "";
+
+    relatorioConsole.forEach((item) => {
+      const card = document.createElement("div");
+      card.classList.add("card-agendamento");
+      card.innerHTML = `
+        <p>
+        <strong>${item.Cliente}</strong> | Valor: ${item.Valor} | Faixa: ${item.Faixa})<br>
+        <small>Dia: ${item.Dia} | Horário: ${item.Horario} | Funcionamento: ${item.HorarioFuncionamento}</small>
+        </p>
+        <hr>
+      `;
+      containerAgendamentos.appendChild(card);
+     });
     }
-  }
-}
 
+}
+ 
 // =========================================================================
 // BLOCO B: LÓGICA PURA DE FUNÇÕES E ARRAYS (Aula 11)
 // =========================================================================

@@ -135,3 +135,106 @@ if (formularioAgendamento !== null) {
     window.open(urlWhatsApp, "_blank", "noopener,noreferrer");
   });
 }
+// 5. Tabela de Agendamento Semanal: Filtros, Edição, Adição e Exclusão
+const btnEditarTabela = document.getElementById("btn-editar-tabela");
+const btnAdicionarLinha = document.getElementById("btn-adicionar-linha");
+const tbodySemanal = document.querySelector(".tabela-agenda tbody");
+const filtroDia = document.getElementById("filtro-dia");
+const filtroProfissional = document.getElementById("filtro-profissional");
+
+// Função para atualizar cores dos badges de status automaticamente após edição
+function atualizarBadgesStatus() {
+  if (!tbodySemanal) return;
+  tbodySemanal.querySelectorAll("tr").forEach((linha) => {
+    const celulaStatus = linha.cells[5];
+    if (!celulaStatus) return;
+    const texto = celulaStatus.textContent.trim().toLowerCase();
+    let classe = "disponivel";
+    if (texto.includes("última") || texto.includes("ultima")) classe = "ultima-vaga";
+    if (texto.includes("lotado") || texto.includes("indisponível") || texto.includes("indisponivel")) classe = "lotado";
+    celulaStatus.innerHTML = `<span class="badge ${classe}">${celulaStatus.textContent.trim()}</span>`;
+  });
+}
+
+// Carrega tabela salva no localStorage (se já tiver sido editada antes)
+if (tbodySemanal) {
+  const tabelaSalva = localStorage.getItem("tabelaAgendaCompleta");
+  if (tabelaSalva) {
+    tbodySemanal.innerHTML = tabelaSalva;
+  }
+}
+
+// Filtrar por Dia e Profissional
+function filtrarTabela() {
+  if (!tbodySemanal) return;
+  const diaSelecionado = filtroDia ? filtroDia.value : "todos";
+  const profSelecionada = filtroProfissional ? filtroProfissional.value : "todos";
+
+  tbodySemanal.querySelectorAll("tr").forEach((linha) => {
+    const diaLinha = linha.cells[0]?.textContent.trim() || "";
+    const profLinha = linha.cells[3]?.textContent.trim() || "";
+
+    const bateDia = diaSelecionado === "todos" || diaLinha.toLowerCase().includes(diaSelecionado.toLowerCase());
+    const bateProf = profSelecionada === "todos" || profLinha.toLowerCase().includes(profSelecionada.toLowerCase());
+
+    linha.style.display = bateDia && bateProf ? "" : "none";
+  });
+}
+
+if (filtroDia) filtroDia.addEventListener("change", filtrarTabela);
+if (filtroProfissional) filtroProfissional.addEventListener("change", filtrarTabela);
+
+// Excluir linha da tabela
+if (tbodySemanal) {
+  tbodySemanal.addEventListener("click", (evento) => {
+    if (evento.target.classList.contains("btn-excluir")) {
+      if (confirm("Deseja remover este horário da tabela?")) {
+        evento.target.closest("tr").remove();
+        localStorage.setItem("tabelaAgendaCompleta", tbodySemanal.innerHTML);
+      }
+    }
+  });
+}
+
+// Adicionar nova linha já editável
+if (btnAdicionarLinha && tbodySemanal) {
+  btnAdicionarLinha.addEventListener("click", () => {
+    const novaLinha = document.createElement("tr");
+    novaLinha.innerHTML = `
+      <td contenteditable="true">Quinta-feira</td>
+      <td contenteditable="true">09:00 às 18:00</td>
+      <td contenteditable="true">Novo Serviço</td>
+      <td contenteditable="true">Andreza</td>
+      <td contenteditable="true">R$ 100,00</td>
+      <td contenteditable="true"><span class="badge disponivel">Disponível</span></td>
+      <td><button type="button" class="btn-excluir" title="Excluir linha">🗑️</button></td>
+    `;
+    novaLinha.querySelectorAll("td:not(:last-child)").forEach((td) => {
+      td.style.backgroundColor = "#fff8dc";
+    });
+    tbodySemanal.appendChild(novaLinha);
+    if (btnEditarTabela) btnEditarTabela.textContent = "Salvar Tabela";
+  });
+}
+
+// Editar e Salvar Tabela
+if (btnEditarTabela && tbodySemanal) {
+  btnEditarTabela.addEventListener("click", () => {
+    const estaEditando = btnEditarTabela.textContent === "Salvar Tabela";
+    const celulasEditaveis = tbodySemanal.querySelectorAll("td:not(:last-child)");
+
+    celulasEditaveis.forEach((td) => {
+      td.contentEditable = !estaEditando;
+      td.style.backgroundColor = !estaEditando ? "#fff8dc" : "";
+    });
+
+    if (estaEditando) {
+      atualizarBadgesStatus();
+      localStorage.setItem("tabelaAgendaCompleta", tbodySemanal.innerHTML);
+      btnEditarTabela.textContent = "Editar Tabela";
+      alert("Tabela atualizada e salva com sucesso!");
+    } else {
+      btnEditarTabela.textContent = "Salvar Tabela";
+    }
+  });
+}

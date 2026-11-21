@@ -15,9 +15,9 @@
       <!-- SVG Inline acessível: permanece nítido ao redimensionar a janela pois é vetorial (Aula 05) -->
       <svg width="36" height="36" viewBox="0 0 64 64" role="img" aria-labelledby="titulo-logo">
         <title id="titulo-logo">Logotipo Espaço Bella Nails</title>
-        <circle cx="32" cy="32" r="30" fill="#f8bbd0" />
+    <circle cx="32" cy="32" r="30" fill="#f8bbd0" />
         <path d="M24 44 C24 24, 40 24, 40 44 Z" fill="#ad1457" />
-        <circle cx="32" cy="22" r="4" fill="#ffffff" />
+      <circle cx="32" cy="22" r="4" fill="#ffffff" />
       </svg>
       <h1>Espaço Bella Nails</h1>
     </div>
@@ -30,10 +30,9 @@
       <ul class="menu-lista">
         <li><a href="#sobre" class="ativo">Início</a></li>
         <li class="item-dropdown">
-          <a href="#servicos">Serviços &#9662;</a>
+      <a href="#servicos">Serviços &#9662;</a>
           <ul class="submenu">
-            <li><a href="#servicos">Alongamento em Gel</a></li>
-            <li><a href="#servicos">Blindagem e Esmaltação</a></li>
+            <li><a href="#servicos">Alongamento em Gel</a></li            <li><a href="#servicos">Blindagem e Esmaltação</a></li>
             <li><a href="#servicos">Spa dos Pés</a></li>
             <li><a href="#servicos">Banho de Gel</a></li>
             <li><a href="#servicos">Manutenção em Gel</a></li>
@@ -111,55 +110,84 @@
 <section id="agenda" class="secao">
   <h2>Tabela de Agendamento Semanal</h2>
   <p>Consulte os horários disponíveis e valores base antes de preencher sua solicitação.</p>
+<!-- Barra de Controles e Filtros -->
+    <div class="controles-tabela">
+      <div class="filtros-tabela">
+        <select id="filtro-dia">
+          <option value="todos">Todos os Dias</option>
+          <option value="Terça-feira">Terça-feira</option>
+          <option value="Quarta-feira">Quarta-feira</option>
+          <option value="Quinta-feira">Quinta-feira</option>
+          <option value="Sexta-feira">Sexta-feira</option>
+          <option value="Sábado">Sábado</option>
+        </select>
 
-  <table class="tabela-agenda">
-    <thead>
-      <tr>
-        <th>Dia da Semana</th>
-        <th>Horário</th>
-        <th>Serviço</th>
-        <th>Profissional</th>
-        <th>Valor</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Terça-feira</td>
-        <td>09:00</td>
-        <td>Alongamento na Tip</td>
-        <td>Bella</td>
-        <td>R$ 140,00</td>
-        <td>Disponível</td>
-      </tr>
-      <tr>
-        <td>Quarta-feira</td>
-        <td>14:00</td>
-        <td>Esmaltação em Gel</td>
-        <td>Camila</td>
-        <td>R$ 70,00</td>
-        <td>Disponível</td>
-      </tr>
-      <tr>
-        <td>Sexta-feira</td>
-        <td>10:30</td>
-        <td>Manutenção em Gel</td>
-        <td>Bella</td>
-        <td>R$ 110,00</td>
-        <td>Última Vaga</td>
-      </tr>
-      <tr>
-        <td>Sábado</td>
-        <td>15:00</td>
-        <td>Combo Mão + Spa dos Pés</td>
-        <td>Camila</td>
-        <td>R$ 140,00</td>
-        <td>Disponível</td>
-      </tr>
-    </tbody>
-  </table>
-</section>
+        <select id="filtro-profissional">
+          <option value="todos">Todas as Profissionais</option>
+          <option value="Andreza">Andreza</option>
+        </select>
+      </div>
 
+      <div class="botoes-tabela">
+        <button type="button" id="btn-adicionar-linha" class="btn-acao">+ Novo Horário</button>
+        <button type="button" id="btn-editar-tabela" class="btn-acao">Editar Tabela</button>
+      </div>
+    </div>
+
+    <!-- Tabela Responsiva -->
+    <div class="tabela-container">
+      <table class="tabela-agenda">
+        <thead>
+          <tr>
+            <th>Dia da Semana</th>
+            <th>Horário</th>
+            <th>Serviço</th>
+            <th>Profissional</th>
+            <th>Valor</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Terça-feira</td>
+            <td>09:00 às 18:00</td>
+            <td>Alongamento na Tip</td>
+            <td>Andreza</td>
+            <td>R$ 140,00</td>
+            <td><span class="badge disponivel">Disponível</span></td>
+            <td><button type="button" class="btn-excluir" title="Excluir linha">🗑️</button></td>
+          </tr>
+          <tr>
+            <td>Quarta-feira</td>
+            <td>14:00</td>
+            <td>Esmaltação em Gel</td>
+            <td>Andreza</td>
+            <td>R$ 70,00</td>
+            <td><span class="badge disponivel">Disponível</span></td>
+            <td><button type="button" class="btn-excluir" title="Excluir linha">🗑️</button></td>
+          </tr>
+          <tr>
+            <td>Sexta-feira</td>
+            <td>10:30</td>
+            <td>Manutenção em Gel</td>
+            <td>Andreza</td>
+            <td>R$ 110,00</td>
+            <td><span class="badge ultima-vaga">Última Vaga</span></td>
+            <td><button type="button" class="btn-excluir" title="Excluir linha">🗑️</button></td>
+          </tr>
+          <tr>
+            <td>Sábado</td>
+            <td>15:00</td>
+            <td>Combo Mão + Spa dos Pés</td>
+            <td>Andreza</td>
+            <td>R$ 140,00</td>
+            <td><span class="badge disponivel">Disponível</span></td>
+            <td><button type="button" class="btn-excluir" title="Excluir linha">🗑️</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     
     <section id="galeria" class="secao">
       <h2>Galeria de Inspirações</h2>
@@ -221,6 +249,12 @@
         </canvas>
       </div>
     </section>
+
+      <section id="painel-agendamentos" class="secao">
+        <h2>Agendamentos da semana</h2>
+        <p id="resumo-faturamento"></p>
+        <div id="lista-agendamentos"></div>
+      </section>
 
     <!-- Seção 4: Formulário de Agendamento Semântico e Acessível (Aula 03) -->
     <section id="agendar" class="secao">
