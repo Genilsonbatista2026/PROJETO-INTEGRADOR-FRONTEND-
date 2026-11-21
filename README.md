@@ -48,7 +48,7 @@ projeto-integrador-frontend-genilson/
 ---
 
 ## 🚀 Status do Projeto
-✅ Concluído — Entregas das Aulas 01 a 11 aplicadas e versionadas.
+✅ — Entregas das Aulas 01 a 11 aplicadas e versionadas.
 
 ---
 
