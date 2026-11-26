@@ -62,179 +62,390 @@ if (secaoResultado !== null) {
   });
 }
 
+/// =========================================================================
+// PARTE 3 E 4 UNIFICADAS: AGENDA SEMANAL + FORMULÁRIO DE PRÉ-AGENDAMENTO
+// Padrão: evento -> atualiza os dados -> redesenha (sem innerHTML)
 // =========================================================================
-// PARTE 3: PREENCHIMENTO AUTOMÁTICO DA TABELA + ENVIO PARA WHATSAPP
-// =========================================================================
-const formularioAgendamento = document.querySelector(".formulario-agendamento");
-const corpoTabelaAgenda = document.querySelector("#corpo-tabela-agenda");
 
-// Função que cria uma nova linha <tr> na tabela de forma segura
-function adicionarLinhaNaTabela(cliente, dataFormatada, hora, servico, status = "Solicitado") {
-  if (corpoTabelaAgenda === null) {
+// 1. FONTE DE VERDADE: Array inicial com a propriedade "cliente" incluída
+const horariosIniciais = [
+  { id: 1, dia: "Terça-feira", horario: "09:00", cliente: "", servico: "Alongamento na Tip", profissional: "Andreza", valor: 140.00, reservado: false },
+  { id: 2, dia: "Quarta-feira", horario: "14:00", cliente: "", servico: "Esmaltação em Gel", profissional: "Andreza", valor: 70.00, reservado: false },
+  { id: 3, dia: "Quinta-feira", horario: "11:00", cliente: "", servico: "Banho de Gel", profissional: "Andreza", valor: 95.00, reservado: false },
+  { id: 4, dia: "Sexta-feira", horario: "10:30", cliente: "Carla Mendes", servico: "Manutenção em Gel", profissional: "Andreza", valor: 110.00, reservado: true },
+  { id: 5, dia: "Sábado", horario: "15:00", cliente: "", servico: "Combo Mão + Spa dos Pés", profissional: "Andreza", valor: 140.00, reservado: false }
+];
+
+const horariosSemanal = JSON.parse(localStorage.getItem("agendaUnificadaBellaNails")) || horariosIniciais;
+let proximoIdAgenda = horariosSemanal.reduce((maior, item) => Math.max(maior, item.id), 0) + 1;
+
+function salvarAgendaNoNavegador() {
+  localStorage.setItem("agendaUnificadaBellaNails", JSON.stringify(horariosSemanal));
+}
+
+// Referências únicas do DOM
+const tbodyAgendaSemanal = document.querySelector("#tbody-agenda-semanal");
+const selectFiltroDia = document.querySelector("#filtro-dia");
+const inputBuscaServico = document.querySelector("#busca-servico");
+const paragrafoResumoAgenda = document.querySelector("#resumo-agenda");
+const btnToggleNovoHorario = document.querySelector("#btn-adicionar-linha");
+const painelNovoHorario = document.querySelector("#painel-novo-horario");
+const formNovoHorario = document.querySelector("#form-novo-horario");
+const formularioAgendamento = document.querySelector(".formulario-agendamento");
+
+// Utilitários para o formulário principal de pré-agendamento
+function obterDiaDaSemana(dataISO) {
+  if (!dataISO) return "Terça-feira";
+  const dias = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
+  const dataObj = new Date(dataISO + "T12:00:00");
+  return dias[dataObj.getDay()] || "Terça-feira";
+}
+
+function extrairValorDoServico(textoServico) {
+  const match = textoServico.match(/R\$\s*(\d+[.,]?\d*)/);
+  if (match) {
+    return Number(match[1].replace(",", "."));
+  }
+  return 0;
+}
+
+// 7. FUNÇÃO PURA DE CÁLCULO DO RESUMO
+function calcularResumoSemanal(listaFiltrada) {
+  const total = listaFiltrada.length;
+  const disponiveis = listaFiltrada.filter((item) => !item.reservado).length;
+  const faturamento = listaFiltrada.reduce((soma, item) => soma + item.valor, 0);
+  return { total, disponiveis, faturamento };
+}
+
+function atualizarResumoSemanal(listaFiltrada) {
+  if (!paragrafoResumoAgenda) return;
+  const { total, disponiveis, faturamento } = calcularResumoSemanal(listaFiltrada);
+  paragrafoResumoAgenda.textContent = `Exibindo ${total} horário(s) | Vagas disponíveis: ${disponiveis} | Valor total listado: R$ ${faturamento.toFixed(2).replace(".", ",")}`;
+}
+
+// 2. CRIA UMA LINHA <tr> COM SEGURANÇA (Com a coluna Cliente)
+function criarLinhaAgendaSemanal(item) {
+  const tr = document.createElement("tr");
+  tr.dataset.id = String(item.id);
+
+  const tdDia = document.createElement("td");
+  tdDia.textContent = item.dataFormatada ? `${item.dia} (${item.dataFormatada})` : item.dia;
+
+  const tdHorario = document.createElement("td");
+  tdHorario.textContent = item.horario;
+
+  const tdCliente = document.createElement("td");
+  tdCliente.textContent = item.cliente && item.cliente.trim() !== "" ? item.cliente : "—";
+
+  const tdServico = document.createElement("td");
+  tdServico.textContent = item.servico;
+
+  const tdProfissional = document.createElement("td");
+  tdProfissional.textContent = item.profissional;
+
+  const tdValor = document.createElement("td");
+  tdValor.textContent = item.valor > 0 ? `R$ ${item.valor.toFixed(2).replace(".", ",")}` : "A confirmar";
+
+  const tdStatus = document.createElement("td");
+  const spanBadge = document.createElement("span");
+  spanBadge.className = item.reservado ? "badge ultima-vaga" : "badge disponivel";
+  spanBadge.textContent = item.reservado ? "Reservado" : "Disponível";
+  tdStatus.append(spanBadge);
+
+  const tdAcoes = document.createElement("td");
+
+  const btnReservar = document.createElement("button");
+  btnReservar.type = "button";
+  btnReservar.dataset.acao = "alternar-reserva";
+  btnReservar.setAttribute("aria-pressed", String(item.reservado));
+  btnReservar.textContent = item.reservado ? "Liberar" : "Reservar";
+
+  const btnExcluir = document.createElement("button");
+  btnExcluir.type = "button";
+  btnExcluir.className = "btn-excluir";
+  btnExcluir.dataset.acao = "excluir";
+  btnExcluir.title = "Excluir linha";
+  btnExcluir.setAttribute("aria-label", `Excluir horário de ${item.servico}`);
+  btnExcluir.textContent = "🗑️";
+
+  tdAcoes.append(btnReservar, " ", btnExcluir);
+  tr.append(tdDia, tdHorario, tdCliente, tdServico, tdProfissional, tdValor, tdStatus, tdAcoes);
+
+  return tr;
+}
+
+// 3. DESENHA A TABELA A PARTIR DOS DADOS E FILTROS
+function desenharAgendaSemanal() {
+  if (!tbodyAgendaSemanal) return;
+
+  const diaEscolhido = selectFiltroDia ? selectFiltroDia.value : "todos";
+  const termoBusca = inputBuscaServico ? inputBuscaServico.value.trim().toLowerCase() : "";
+
+  const listaFiltrada = horariosSemanal.filter((item) => {
+    const bateDia = diaEscolhido === "todos" || item.dia === diaEscolhido;
+    const textoCompleto = `${item.servico} ${item.cliente || ""}`.toLowerCase();
+    const bateBusca = textoCompleto.includes(termoBusca);
+    return bateDia && bateBusca;
+  });
+
+  const linhas = listaFiltrada.map(criarLinhaAgendaSemanal);
+  tbodyAgendaSemanal.replaceChildren(...linhas);
+  atualizarResumoSemanal(listaFiltrada);
+}
+
+// 4. DELEGAÇÃO DE EVENTOS NA TABELA (Usa closest e dataset)
+function lidarCliqueAgendaSemanal(evento) {
+  const botao = evento.target.closest("button[data-acao]");
+  if (!botao) return;
+
+  const linha = botao.closest("tr[data-id]");
+  if (!linha) return;
+
+  const id = Number(linha.dataset.id);
+  const acao = botao.dataset.acao;
+
+  if (acao === "excluir") {
+    const indice = horariosSemanal.findIndex((item) => item.id === id);
+    if (indice !== -1) {
+      horariosSemanal.splice(indice, 1);
+      salvarAgendaNoNavegador();
+      desenharAgendaSemanal();
+    }
+  } else if (acao === "alternar-reserva") {
+    const itemEncontrado = horariosSemanal.find((item) => item.id === id);
+    if (itemEncontrado) {
+      itemEncontrado.reservado = !itemEncontrado.reservado;
+      if (!itemEncontrado.reservado) {
+        itemEncontrado.cliente = "";
+      }
+      salvarAgendaNoNavegador();
+      desenharAgendaSemanal();
+    }
+  }
+}
+
+function iniciarDelegacaoAgendaSemanal() {
+  if (tbodyAgendaSemanal) {
+    tbodyAgendaSemanal.addEventListener("click", lidarCliqueAgendaSemanal);
+  }
+}
+
+// 5. CONTROLE COM ESTADO (+ Novo Horário) E SUPORTE À TECLA ESCAPE
+function alternarPainelNovoHorario() {
+  if (!btnToggleNovoHorario || !painelNovoHorario) return;
+  const estaAberto = btnToggleNovoHorario.getAttribute("aria-expanded") === "true";
+  const novoEstado = !estaAberto;
+
+  btnToggleNovoHorario.setAttribute("aria-expanded", String(novoEstado));
+  painelNovoHorario.hidden = !novoEstado;
+
+  if (novoEstado) {
+    document.querySelector("#novo-dia")?.focus();
+  }
+}
+
+function fecharPainelComEscape(evento) {
+  if (
+    evento.key === "Escape" &&
+    btnToggleNovoHorario &&
+    btnToggleNovoHorario.getAttribute("aria-expanded") === "true"
+  ) {
+    btnToggleNovoHorario.setAttribute("aria-expanded", "false");
+    painelNovoHorario.hidden = true;
+    btnToggleNovoHorario.focus();
+  }
+}
+
+function iniciarControlePainelAgenda() {
+  if (btnToggleNovoHorario) {
+    btnToggleNovoHorario.addEventListener("click", alternarPainelNovoHorario);
+  }
+  document.addEventListener("keydown", fecharPainelComEscape);
+}
+
+// 6. FILTRO POR DIA (change) E BUSCA POR SERVIÇO/CLIENTE (input)
+function iniciarFiltrosAgendaSemanal() {
+  if (selectFiltroDia) {
+    selectFiltroDia.addEventListener("change", desenharAgendaSemanal);
+  }
+  if (inputBuscaServico) {
+    inputBuscaServico.addEventListener("input", desenharAgendaSemanal);
+  }
+}
+
+// 8A. FORMULÁRIO RÁPIDO "+ NOVO HORÁRIO"
+function salvarNovoHorarioNaTabela() {
+  const campoDia = document.querySelector("#novo-dia");
+  const campoCliente = document.querySelector("#novo-cliente");
+  const campoHorario = document.querySelector("#novo-horario");
+  const campoServico = document.querySelector("#novo-servico");
+  const campoValor = document.querySelector("#novo-valor");
+  const campodata = document.querySelector("#novo-data");
+  const dataFormatada = campodata.value ? campodata.value.split("-").reverse().join("/") : "a definir";
+
+  if (!campoDia || !campoHorario || !campoServico || !campoValor || !campodata) {
+    alert("Erro interno: campos do novo horário não encontrados no HTML.");
     return;
   }
 
-  const novaLinha = document.createElement("tr");
-  const dadosColunas = [cliente, dataFormatada, hora, servico, status];
+  const dia = campoDia.value;
+  const cliente = campoCliente ? campoCliente.value.trim() : "";
+  const horario = campoHorario.value.trim();
+  const servico = campoServico.value.trim();
+  const valorTexto = campoValor.value.trim().replace(",", ".");
+  const valor = valorTexto === "" ? 0 : Number(valorTexto);
 
-  dadosColunas.forEach((texto) => {
-    const celula = document.createElement("td");
-    celula.textContent = texto;
-    novaLinha.append(celula);
+  if (!horario || !servico || Number.isNaN(valor)) {
+    alert("Por favor, preencha o horário, o serviço e um valor válido.");
+    return;
+  }
+
+  horariosSemanal.push({
+    id: proximoIdAgenda++,
+    dia,
+    horario,
+    cliente,
+    servico,
+    profissional: "Andreza",
+    valor,
+    reservado: cliente !== ""
   });
 
-  corpoTabelaAgenda.append(novaLinha);
+  salvarAgendaNoNavegador();
+
+  // Limpa os campos manualmente
+  if (campoCliente) campoCliente.value = "";
+  campoHorario.value = "";
+  campoServico.value = "";
+  campoValor.value = "";
+
+  desenharAgendaSemanal();
 }
 
-const agendamentosSalvos = JSON.parse(localStorage.getItem("agendaBellaNails")) || [];
-agendamentosSalvos.forEach((item) => {
-  adicionarLinhaNaTabela(item.cliente, item.data, item.hora, item.servico, item.status);
-});
-
-if (formularioAgendamento !== null) {
-  formularioAgendamento.addEventListener("submit", function (evento) {
-    evento.preventDefault();
-
-    const nome = document.querySelector("#nome-cliente").value.trim();
-    const telefone = document.querySelector("#telefone-cliente").value.trim();
-    const data = document.querySelector("#data-agendamento").value;
-    const campoHora = document.querySelector("#hora-agendamento");
-    const hora = campoHora ? campoHora.value : "A combinar";
-
-    const selectServico = document.querySelector("#servico-escolhido");
-    const servicoTexto = selectServico.options[selectServico.selectedIndex].text;
-
-    const dataFormatada = data.split("-").reverse().join("/");
-
-    // 1. Insere imediatamente na tabela da página
-    adicionarLinhaNaTabela(nome, dataFormatada, hora, servicoTexto, "Pré-agendado");
-
-    // 2. Salva no localStorage para manter na tabela mesmo ao atualizar a página
-    agendamentosSalvos.push({
-      cliente: nome,
-      data: dataFormatada,
-      hora: hora,
-      servico: servicoTexto,
-      status: "Pré-agendado"
-    });
-    localStorage.setItem("agendaBellaNails", JSON.stringify(agendamentosSalvos));
-
-    // 3. Limpa o formulário após inserir na tabela
-    formularioAgendamento.reset();
-
-    // 4. Abre o WhatsApp com os dados preenchidos
-    const numeroEstudio = "5583988345583";
-    const mensagem = "Olá, Espaço Bella Nails! Gostaria de solicitar um agendamento:\n\n" +
-      "*Nome:* " + nome + "\n" +
-      "*WhatsApp:* " + telefone + "\n" +
-      "*Serviço:* " + servicoTexto + "\n" +
-      "*Data:* " + dataFormatada + "\n" +
-      "*Horário:* " + hora;
-
-    const urlWhatsApp = "https://wa.me/" + numeroEstudio + "?text=" + encodeURIComponent(mensagem);
-    window.open(urlWhatsApp, "_blank", "noopener,noreferrer");
-  });
-}
-// 5. Tabela de Agendamento Semanal: Filtros, Edição, Adição e Exclusão
-const btnEditarTabela = document.getElementById("btn-editar-tabela");
-const btnAdicionarLinha = document.getElementById("btn-adicionar-linha");
-const tbodySemanal = document.querySelector(".tabela-agenda tbody");
-const filtroDia = document.getElementById("filtro-dia");
-const filtroProfissional = document.getElementById("filtro-profissional");
-
-// Função para atualizar cores dos badges de status automaticamente após edição
-function atualizarBadgesStatus() {
-  if (!tbodySemanal) return;
-  tbodySemanal.querySelectorAll("tr").forEach((linha) => {
-    const celulaStatus = linha.cells[5];
-    if (!celulaStatus) return;
-    const texto = celulaStatus.textContent.trim().toLowerCase();
-    let classe = "disponivel";
-    if (texto.includes("última") || texto.includes("ultima")) classe = "ultima-vaga";
-    if (texto.includes("lotado") || texto.includes("indisponível") || texto.includes("indisponivel")) classe = "lotado";
-    celulaStatus.innerHTML = `<span class="badge ${classe}">${celulaStatus.textContent.trim()}</span>`;
-  });
-}
-
-// Carrega tabela salva no localStorage (se já tiver sido editada antes)
-if (tbodySemanal) {
-  const tabelaSalva = localStorage.getItem("tabelaAgendaCompleta");
-  if (tabelaSalva) {
-    tbodySemanal.innerHTML = tabelaSalva;
+function iniciarFormularioNovoHorario() {
+  const btnSalvarHorario = document.querySelector("#btn-salvar-horario");
+  if (btnSalvarHorario) {
+    btnSalvarHorario.addEventListener("click", salvarNovoHorarioNaTabela);
   }
 }
 
-// Filtrar por Dia e Profissional
-function filtrarTabela() {
-  if (!tbodySemanal) return;
-  const diaSelecionado = filtroDia ? filtroDia.value : "todos";
-  const profSelecionada = filtroProfissional ? filtroProfissional.value : "todos";
+/// 8A. FORMULÁRIO RÁPIDO "+ NOVO HORÁRIO"
+function salvarNovoHorarioNaTabela() {
+  const campoDia = document.querySelector("#novo-dia");
+  const campoCliente = document.querySelector("#novo-cliente");
+  const campoHorario = document.querySelector("#novo-horario");
+  const campoServico = document.querySelector("#novo-servico");
+  const campodata=document.querySelector("#novo-data");
+  const campoValor = document.querySelector("#novo-valor");
 
-  tbodySemanal.querySelectorAll("tr").forEach((linha) => {
-    const diaLinha = linha.cells[0]?.textContent.trim() || "";
-    const profLinha = linha.cells[3]?.textContent.trim() || "";
+  if (!campoDia || !campoHorario || !campoServico || !campoValor || !campodata) {
+    alert("Erro interno: campos do novo horário não encontrados no HTML.");
+    return;
+  }
 
-    const bateDia = diaSelecionado === "todos" || diaLinha.toLowerCase().includes(diaSelecionado.toLowerCase());
-    const bateProf = profSelecionada === "todos" || profLinha.toLowerCase().includes(profSelecionada.toLowerCase());
+  const dia = campoDia.value;
+  const cliente = campoCliente ? campoCliente.value.trim() : "";
+  const horario = campoHorario.value.trim();
+  const servico = campoServico.value.trim();
+  const data = campodata.value;
+  const dataFormatada = campodata.value ? campodata.value.split("-").reverse().join("/") :"";
+  const valorTexto = campoValor.value.trim().replace(",", ".");
+  const valor = valorTexto === "" ? 0 : Number(valorTexto);
 
-    linha.style.display = bateDia && bateProf ? "" : "none";
+  if (!horario || !servico || Number.isNaN(valor)) {
+    alert("Por favor, preencha o horário, o serviço e um valor válido.");
+    return;
+  }
+
+  horariosSemanal.push({
+    id: proximoIdAgenda++,
+    dia,
+    horario,
+    cliente,
+    servico,
+    data,
+     dataFormatada,
+    profissional: "Andreza",
+    valor,
+    reservado: cliente !== ""
   });
+
+  salvarAgendaNoNavegador();
+
+  // Limpa os campos manualmente
+  if (campoCliente) campoCliente.value = "";
+  campoHorario.value = "";
+  campoServico.value = "";
+  campodata .value = "";
+  campoValor.value = "";
+
+  desenharAgendaSemanal();
 }
 
-if (filtroDia) filtroDia.addEventListener("change", filtrarTabela);
-if (filtroProfissional) filtroProfissional.addEventListener("change", filtrarTabela);
-
-// Excluir linha da tabela
-if (tbodySemanal) {
-  tbodySemanal.addEventListener("click", (evento) => {
-    if (evento.target.classList.contains("btn-excluir")) {
-      if (confirm("Deseja remover este horário da tabela?")) {
-        evento.target.closest("tr").remove();
-        localStorage.setItem("tabelaAgendaCompleta", tbodySemanal.innerHTML);
-      }
-    }
-  });
+function iniciarFormularioNovoHorario() {
+  const btnSalvarHorario = document.querySelector("#btn-salvar-horario");
+  if (btnSalvarHorario) {
+    btnSalvarHorario.addEventListener("click", salvarNovoHorarioNaTabela);
+  }
 }
 
-// Adicionar nova linha já editável
-if (btnAdicionarLinha && tbodySemanal) {
-  btnAdicionarLinha.addEventListener("click", () => {
-    const novaLinha = document.createElement("tr");
-    novaLinha.innerHTML = `
-      <td contenteditable="true">Quinta-feira</td>
-      <td contenteditable="true">09:00 às 18:00</td>
-      <td contenteditable="true">Novo Serviço</td>
-      <td contenteditable="true">Andreza</td>
-      <td contenteditable="true">R$ 100,00</td>
-      <td contenteditable="true"><span class="badge disponivel">Disponível</span></td>
-      <td><button type="button" class="btn-excluir" title="Excluir linha">🗑️</button></td>
-    `;
-    novaLinha.querySelectorAll("td:not(:last-child)").forEach((td) => {
-      td.style.backgroundColor = "#fff8dc";
-    });
-    tbodySemanal.appendChild(novaLinha);
-    if (btnEditarTabela) btnEditarTabela.textContent = "Salvar Tabela";
+// 8B. FORMULÁRIO PRINCIPAL "SOLICITAR AGENDAMENTO" (Insere na mesma tabela + WhatsApp)
+function lidarSolicitacaoAgendamento(evento) {
+  evento.preventDefault();
+
+  const nome = document.querySelector("#nome-cliente").value.trim();
+  const telefone = document.querySelector("#telefone-cliente").value.trim();
+  const data = document.querySelector("#data-agendamento").value;
+  const campoHora = document.querySelector("#hora-agendamento");
+  const hora = campoHora && campoHora.value ? campoHora.value : "A combinar";
+
+  const selectServico = document.querySelector("#servico-escolhido");
+  const servicoTexto = selectServico.options[selectServico.selectedIndex].text;
+
+  const dataFormatada = data ? data.split("-").reverse().join("/") : "";
+  const diaSemana = obterDiaDaSemana(data);
+  const valorEstimado = extrairValorDoServico(servicoTexto);
+
+  horariosSemanal.push({
+    id: proximoIdAgenda++,
+    dia: diaSemana,
+    dataFormatada,
+    horario: hora,
+    cliente: nome,
+    servico: servicoTexto,
+    profissional: "Andreza",
+    valor: valorEstimado,
+    reservado: true
   });
+
+  salvarAgendaNoNavegador();
+  desenharAgendaSemanal();
+  formularioAgendamento.reset();
+
+  document.querySelector("#agenda")?.scrollIntoView({ behavior: "smooth" });
+
+  const numeroEstudio = "5583988345583";
+  const mensagem = "Olá, Espaço Bella Nails! Gostaria de solicitar um agendamento:\n\n" +
+    "*Nome:* " + nome + "\n" +
+    "*WhatsApp:* " + telefone + "\n" +
+    "*Serviço:* " + servicoTexto + "\n" +
+    "*Data:* " + dataFormatada + "\n" +
+    "*Horário:* " + hora;
+
+  const urlWhatsApp = "https://wa.me/" + numeroEstudio + "?text=" + encodeURIComponent(mensagem);
+  window.open(urlWhatsApp, "_blank", "noopener,noreferrer");
 }
 
-// Editar e Salvar Tabela
-if (btnEditarTabela && tbodySemanal) {
-  btnEditarTabela.addEventListener("click", () => {
-    const estaEditando = btnEditarTabela.textContent === "Salvar Tabela";
-    const celulasEditaveis = tbodySemanal.querySelectorAll("td:not(:last-child)");
-
-    celulasEditaveis.forEach((td) => {
-      td.contentEditable = !estaEditando;
-      td.style.backgroundColor = !estaEditando ? "#fff8dc" : "";
-    });
-
-    if (estaEditando) {
-      atualizarBadgesStatus();
-      localStorage.setItem("tabelaAgendaCompleta", tbodySemanal.innerHTML);
-      btnEditarTabela.textContent = "Editar Tabela";
-      alert("Tabela atualizada e salva com sucesso!");
-    } else {
-      btnEditarTabela.textContent = "Salvar Tabela";
-    }
-  });
+function iniciarFormularioCliente() {
+  if (formularioAgendamento) {
+    formularioAgendamento.addEventListener("submit", lidarSolicitacaoAgendamento);
+  }
 }
+
+// Inicialização única
+iniciarDelegacaoAgendaSemanal();
+iniciarControlePainelAgenda();
+iniciarFiltrosAgendaSemanal();
+iniciarFormularioNovoHorario();
+iniciarFormularioCliente();
+desenharAgendaSemanal();

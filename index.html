@@ -8,36 +8,36 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
   <!-- Navbar com Flexbox, position: sticky, dropdown e botão hambúrguer (Aula 08) -->
   <header id="cabecalho-principal" class="navbar">
     <div class="logo-area">
       <!-- SVG Inline acessível: permanece nítido ao redimensionar a janela pois é vetorial (Aula 05) -->
       <svg width="36" height="36" viewBox="0 0 64 64" role="img" aria-labelledby="titulo-logo">
         <title id="titulo-logo">Logotipo Espaço Bella Nails</title>
-    <circle cx="32" cy="32" r="30" fill="#f8bbd0" />
+        <circle cx="32" cy="32" r="30" fill="#f8bbd0" />
         <path d="M24 44 C24 24, 40 24, 40 44 Z" fill="#ad1457" />
-      <circle cx="32" cy="22" r="4" fill="#ffffff" />
+        <circle cx="32" cy="22" r="4" fill="#ffffff" />
       </svg>
       <h1>Espaço Bella Nails</h1>
     </div>
 
     <button class="btn-hamburguer" aria-label="Abrir menu de navegação" aria-expanded="false">
-      &#9776;
+      ☰
     </button>
 
     <nav aria-label="Menu Principal">
       <ul class="menu-lista">
         <li><a href="#sobre" class="ativo">Início</a></li>
         <li class="item-dropdown">
-      <a href="#servicos">Serviços &#9662;</a>
+          <a href="#servicos">Serviços ▾</a>
           <ul class="submenu">
-            <li><a href="#servicos">Alongamento em Gel</a></li            <li><a href="#servicos">Blindagem e Esmaltação</a></li>
+            <li><a href="#servicos">Alongamento em Gel</a></li>
+            <li><a href="#servicos">Blindagem e Esmaltação</a></li>
             <li><a href="#servicos">Spa dos Pés</a></li>
             <li><a href="#servicos">Banho de Gel</a></li>
             <li><a href="#servicos">Manutenção em Gel</a></li>
             <li><a href="#servicos">Alongamento de Tips</a></li>
-            <li><a href="#servicos">Manicure e Pedicure</a></li>
+            <li><a href="#servicos">Combo Manicure + Pedicure</a></li>
             <li><a href="#servicos">Combo Banho de Gel + Pedicure</a></li>
             <li><a href="#servicos">Combo Alongamento de Tips + Pedicure</a></li>
           </ul>
@@ -57,7 +57,7 @@
       <p>Realçamos a beleza e a saúde das suas unhas com técnicas modernas, biossegurança rigorosa e atendimento personalizado.</p>
 
       <div class="grade-servicos" id="servicos">
-        <article class="card">
+        <article class="card" id="servico-gel">
           <h3>Gel</h3>
           <p>Resistência e naturalidade com acabamento impecável.</p>
           <ul>
@@ -69,7 +69,7 @@
           </ul>
         </article>
 
-        <article class="card">
+        <article class="card" id="servico-manicure">
           <h3>Manicure e Pedicure</h3>
           <p>Serviço de cuidados com as unhas e cutículas.</p>
           <ul>
@@ -81,7 +81,7 @@
           </ul>
         </article>
 
-        <article class="card">
+        <article class="card" id="servico-combos">
           <h3>Combos</h3>
           <p>Ofertas especiais que combinam serviços para um tratamento completo.</p>
           <ul>
@@ -106,15 +106,38 @@
       </figure>
     </section>
 
-    <!-- Seção 2: Tabela de Agendamento (Aulas 02 e 06) -->
-<section id="agenda" class="secao">
-  <h2>Tabela de Agendamento Semanal</h2>
-  <p>Consulte os horários disponíveis e valores base antes de preencher sua solicitação.</p>
-<!-- Barra de Controles e Filtros -->
-    <div class="controles-tabela">
-      <div class="filtros-tabela">
-        <select id="filtro-dia">
-          <option value="todos">Todos os Dias</option>
+    <!-- Seção 2: Tabela de Agendamento (Aulas 02, 06 e 12) -->
+    <section id="agenda" class="secao">
+      <h2>Tabela de Agendamento Semanal</h2>
+      <p>Consulte os horários disponíveis e valores base antes de preencher sua solicitação.</p>
+
+      <!-- Barra de Controles e Filtros -->
+      <div class="controles-tabela">
+        <div class="filtros-tabela">
+          <select id="filtro-dia" aria-label="Filtrar por dia da semana">
+            <option value="todos">Todos os Dias</option>
+            <option value="Terça-feira">Terça-feira</option>
+            <option value="Quarta-feira">Quarta-feira</option>
+            <option value="Quinta-feira">Quinta-feira</option>
+            <option value="Sexta-feira">Sexta-feira</option>
+            <option value="Sábado">Sábado</option>
+          </select>
+
+          <input type="search" id="busca-servico" placeholder="Buscar serviço ou cliente..." aria-label="Buscar por serviço ou cliente">
+        </div>
+
+        <div class="botoes-tabela">
+          <!-- (a) Controle com estado e aria-expanded -->
+          <button type="button" id="btn-adicionar-linha" class="btn-acao" aria-expanded="false" aria-controls="painel-novo-horario">
+            + Novo Horário
+          </button>
+        </div>
+      </div>
+
+      <!-- Painel expansível para criar itens dinamicamente (Passos 5, 8 e 10) -->
+       <div id="painel-novo-horario" hidden>
+       <div class="form-inline-agenda">
+        <select id="novo-dia" name="novo-dia" aria-label="Dia da semana">
           <option value="Terça-feira">Terça-feira</option>
           <option value="Quarta-feira">Quarta-feira</option>
           <option value="Quinta-feira">Quinta-feira</option>
@@ -122,72 +145,49 @@
           <option value="Sábado">Sábado</option>
         </select>
 
-        <select id="filtro-profissional">
-          <option value="todos">Todas as Profissionais</option>
-          <option value="Andreza">Andreza</option>
-        </select>
-      </div>
+        <input type="text" id="novo-cliente" placeholder="Cliente (ex: Genison Batista)" required>
+        <input type="text" id="novo-horario" placeholder="Horário (ex: 16:00)" required>
+        <select id="novo-servico" aria-label="Serviço desejado">
+  <option value="">Selecione o serviço...</option>
+  <option value="Esmaltação Tradicional" data-preco="15">smaltação Tradicional - R$15,00</option>
+  <option value="Esmaltação em Gel" data-preco="70">Esmaltação em Gel - R$ 70,00</option>
+  <option value="Banho de Gel" data-preco="110">Banho de Gel - R$ 110,00</option>
+  <option value="Manutenção em Gel" data-preco="110">Manutenção em Gel - R$ 110,00</option>
+  <option value="Alongamento na Tip" data-preco="140">Alongamento na Tip - R$ 140,00</option>
+  <option value="Spa dos Pés Completo" data-preco="80">Spa dos Pés Completo - R$ 80,00</option>
+  <option value="Combo Alongamento de tips + pedicure" data-preco="170">Combo Alongamento de tips + pedicure - R$ 170,00</option>
+  <option value="combo Banho de Gel + pedicure" data-preco="140">Combo Banho de Gel + pedicure - R$ 140,00</option>
+  <option value="combo Manicure + pedicure" data-preco="60">Combo Manicure + pedicure - R$ 60,00</option>
+</select>
+        <input type="number" id="novo-valor" placeholder="Valor (ex: 50.00)" step="0.01" min="0" required>
+        <input type="date" id="novo-data" placeholder="Data (00/00/0000)" required>
+        <button type="button" id="btn-salvar-horario" class="btn-acao">Salvar Horário</button>
 
-      <div class="botoes-tabela">
-        <button type="button" id="btn-adicionar-linha" class="btn-acao">+ Novo Horário</button>
-        <button type="button" id="btn-editar-tabela" class="btn-acao">Editar Tabela</button>
-      </div>
-    </div>
+      <!-- (d) Resumo dinâmico com aria-live -->
+      <p id="resumo-agenda" aria-live="polite">Carregando horários...</p>
 
-    <!-- Tabela Responsiva -->
-    <div class="tabela-container">
-      <table class="tabela-agenda">
-        <thead>
-          <tr>
-            <th>Dia da Semana</th>
-            <th>Horário</th>
-            <th>Serviço</th>
-            <th>Profissional</th>
-            <th>Valor</th>
-            <th>Status</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Terça-feira</td>
-            <td>09:00 às 18:00</td>
-            <td>Alongamento na Tip</td>
-            <td>Andreza</td>
-            <td>R$ 140,00</td>
-            <td><span class="badge disponivel">Disponível</span></td>
-            <td><button type="button" class="btn-excluir" title="Excluir linha">🗑️</button></td>
-          </tr>
-          <tr>
-            <td>Quarta-feira</td>
-            <td>14:00</td>
-            <td>Esmaltação em Gel</td>
-            <td>Andreza</td>
-            <td>R$ 70,00</td>
-            <td><span class="badge disponivel">Disponível</span></td>
-            <td><button type="button" class="btn-excluir" title="Excluir linha">🗑️</button></td>
-          </tr>
-          <tr>
-            <td>Sexta-feira</td>
-            <td>10:30</td>
-            <td>Manutenção em Gel</td>
-            <td>Andreza</td>
-            <td>R$ 110,00</td>
-            <td><span class="badge ultima-vaga">Última Vaga</span></td>
-            <td><button type="button" class="btn-excluir" title="Excluir linha">🗑️</button></td>
-          </tr>
-          <tr>
-            <td>Sábado</td>
-            <td>15:00</td>
-            <td>Combo Mão + Spa dos Pés</td>
-            <td>Andreza</td>
-            <td>R$ 140,00</td>
-            <td><span class="badge disponivel">Disponível</span></td>
-            <td><button type="button" class="btn-excluir" title="Excluir linha">🗑️</button></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <!-- Tabela Responsiva -->
+      <div class="tabela-container">
+        <table class="tabela-agenda">
+          <thead>
+            <tr>
+              <th>Dia da Semana</th>
+              <th>Data</th>
+              <th>Horário</th>
+              <th>Cliente</th>
+              <th>Serviço</th>
+              <th>Profissional</th>
+              <th>Valor</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <!-- (b) Contêiner onde o JS desenha as linhas e aplica delegação -->
+          <tbody id="tbody-agenda-semanal"></tbody>
+        </table>
+      </div>
+    </section>
+
     
     <section id="galeria" class="secao">
       <h2>Galeria de Inspirações</h2>
@@ -343,7 +343,7 @@
           <p>Bancários Sergio Guerra, 150 - Bancários, João Pessoa - PB</p>
           <p>Terça a Sábado: 09h às 18h</p>
         </div>
-    </div>
+   
 
       <!-- Mapa Interativo do Estúdio -->
       <div class="mapa-container">

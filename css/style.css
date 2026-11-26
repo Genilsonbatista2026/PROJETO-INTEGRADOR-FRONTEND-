@@ -204,7 +204,7 @@ a:active { color: #4a0025; }
   cursor: pointer;
 }
 
-/* Classes de faixa para o DOM (Aula 11) */
+/* Classes de faixa e resumo para o DOM (Aula 11) */
 .item-resultado {
   padding: 0.75rem;
   margin-bottom: 0.5rem;
@@ -215,17 +215,24 @@ a:active { color: #4a0025; }
 .faixa-media { background-color: #fff3e0; border-color: #ef6c00; }
 .faixa-longa { background-color: #fce4ec; border-color: #ad1457; }
 
-footer {
-  text-align: center;
-  padding: 1.5rem;
-  background-color: var(--cor-secundaria);
-  margin-top: 3rem;
+.resumo-destaque {
+  margin-top: 1rem;
+  font-weight: bold;
+  color: var(--cor-primaria);
 }
-footer {
-  text-align: center;
-  padding: 1.5rem;
-  background-color: var(--cor-secundaria);
-  margin-top: 3rem;
+
+.subtitulo-resultado {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--cor-primaria);
+}
+
+.card-agendamento {
+  background-color: var(--cor-branco);
+  border: 1px solid var(--cor-secundaria);
+  border-radius: var(--raio-borda);
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
 }
 
 
@@ -385,4 +392,82 @@ footer {
 
 .btn-excluir:hover {
   transform: scale(1.2);
+}
+/* =========================================================================
+   ESTILOS DA ATIVIDADE PRÁTICA (Aula 12 - Acessibilidade e Interatividade)
+   ========================================================================= */
+
+/* Foco visível obrigatório para navegação pelo teclado (Passo 9) */
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--cor-primaria);
+  outline-offset: 2px;
+}
+
+/* Campo de busca alinhado com o select de filtro */
+.filtros-tabela input[type="search"] {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #d4a5b2;
+  font-size: 0.9rem;
+  background-color: var(--cor-branco);
+}
+
+/* Painel expansível de Novo Horário */
+#painel-novo-horario {
+  margin-bottom: 16px;
+}
+
+.form-inline-agenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 1rem;
+  background-color: var(--cor-branco);
+  border: 1px solid var(--cor-secundaria);
+  border-radius: var(--raio-borda);
+}
+
+.form-inline-agenda select,
+.form-inline-agenda input {
+  padding: 8px 12px;
+  border: 1px solid #d4a5b2;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+/* Parágrafo de resumo dinâmico (aria-live) */
+#resumo-agenda {
+  font-weight: bold;
+  color: var(--cor-primaria);
+  background-color: var(--cor-branco);
+  padding: 0.75rem 1rem;
+  border-left: 4px solid var(--cor-primaria);
+  border-radius: 0.3rem;
+  margin-bottom: 12px;
+}
+
+/* Botão Reservar / Liberar dentro da tabela */
+button[data-acao="alternar-reserva"] {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--cor-primaria);
+  background-color: var(--cor-branco);
+  color: var(--cor-primaria);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-right: 6px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+button[data-acao="alternar-reserva"]:hover {
+  background-color: var(--cor-secundaria);
+}
+
+/* Aparência visual quando o estado aria-pressed é "true" (Checkpoint) */
+button[data-acao="alternar-reserva"][aria-pressed="true"] {
+  background-color: var(--cor-primaria);
+  color: var(--cor-branco);
 }
